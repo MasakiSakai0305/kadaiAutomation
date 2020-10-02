@@ -1,0 +1,3 @@
+
+def checkKadai(kadaiNum):
+    
