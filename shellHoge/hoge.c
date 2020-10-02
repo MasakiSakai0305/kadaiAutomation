@@ -2,9 +2,11 @@
 
 int main(void){
 	//printf("test1\n");
-	int x;
+	int x,y;
 	scanf("%d", &x);
-	printf("あなたが入力した文字は%dです\n", x);
+	scanf("%d", &y);
+	printf("あなたが入力した文字は%dと%dです\n", x, y);
+
 	return 0;
 
 }

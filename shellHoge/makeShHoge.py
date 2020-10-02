@@ -13,8 +13,7 @@ from typing import List
 
 
 #課題ごとの入力内容:複数入力の場合(一回の実行につき複数回入力が行われる)にも対応
-inputCommandsKada = List[List[int]]
-
+inputCommandsKadai = List[List[int]]
 
 #基本・発展問題ごとの入力内容
 inputCommandsKadais = List[inputCommandsKadai]
@@ -30,7 +29,6 @@ inputCommandsHatten: 発展課題の問題毎の入力内容
 def makeSHFile(studentID: int, classNum: int, kihonNum: int, hattenNum: int, inputCommandsKihon: inputCommandsKadais, inputCommandsHatten: inputCommandsKadais):
     with open("No_{}_AL200{}.sh".format(classNum, studentID), "w") as f:
         f.write("#!/bin/bash\n")
-        print(type(f))
 
         #基本問題の数だけコンパイル
         for kihon in range(1, kihonNum+1):
@@ -42,28 +40,28 @@ def makeSHFile(studentID: int, classNum: int, kihonNum: int, hattenNum: int, inp
         
 
         #基本問題実行
+        print("基本課題実行コマンド入力")
         for kihon in range(1, kihonNum+1):
             #基本問題1つ毎に入力内容を書き込む
-            makeInputCommands(inputCommands=inputCommandsKihon[kihon], studentID=studentID, classNum=classNum, kadaiNum=kihon, f=f)
+            makeInputCommands(inputCommands=inputCommandsKihon[kihon-1], studentID=studentID, classNum=classNum, kadaiNum=kihon, f=f)
 
         #発展問題実行
+        print("発展課題実行コマンド入力")
         for hatten in range(1, hattenNum+1):
             #発展問題1つ毎に入力内容を書き込む
-            makeInputCommands(inputCommands=inputCommandsKihon[hatten], studentID=studentID, classNum=classNum, kadaiNum=hatten, f=f)
+            makeInputCommands(inputCommands=inputCommandsHatten[hatten-1], studentID=studentID, classNum=classNum, kadaiNum=hatten, f=f)
 
 #標準入力の内容をshファイルに入力(課題ごと)
 def makeInputCommands(inputCommands:inputCommandsKadai, studentID: int, classNum: int, kadaiNum: int, f):
     for inputCommand in inputCommands:
         f.write("./kihon{}-{}-AL200{} << EOF\n".format(classNum, kadaiNum, studentID))
-        f.write("{}\n".format(inputCommand))
-        f.write("EOF")
+        for inp in inputCommand:
+            f.write("{}\n".format(inp))
+        f.write("EOF\n")
 
-# def hoge(inputCommandsAll:inputCommandsAll):
-#     print(inputCommandsAll)
-#     print(inputCommandsAll[0])
 
 if __name__ == "__main__":
-    l1 = [[1],[2],[3]]
+    l1 = [[1,2],[2],[3]]
     l2 = [[4],[5],[6],[7]]
     l3 = [[8],[9],[10],[11]]
     l4 = [[12],[13],[14]]
