@@ -1,6 +1,7 @@
 import subprocess
 import re
 from typing import List
+import json
 
 # print(subprocess.call(['cat', 'hello.py'])) # 0
 # # 標準入力・標準出力を指定する（2つ目はhello2.pyが作成される）
@@ -18,9 +19,8 @@ print(decoded, type(decoded))
 print(decoded.split())
 print(re.findall(r'\d+', decoded))
 
-
-def exeKadai() -> (List[str], str):
-    shFile = "hoge.sh"
+#shファイルを実行して課題ファイル(.c)をコンパイル → 実行
+def exeKadai(shFile: str) -> (List[str], str):
 
     #shファイル出力結果
     outputResult = subprocess.check_output("./{}".format(shFile)).decode("utf-8").split()
@@ -29,42 +29,80 @@ def exeKadai() -> (List[str], str):
     #print("outputResult:{}".format(outputResult))
     return outputResult, studentID
 
-def checkKadai(checkList: List[str], studentID: str,  answer: List[str]):
+#出力結果の数字を確認して採点する
+def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]]):
     ok = True
     responseList = []
     answerList = []
     checkPointList = []
-    for check in checkList:
+    i=0
+    for check in outputResult:
         checkPoint = re.findall(r'\d+', check)
- 
-        if checkPoint != answer:
+        if checkPoint != answer[i]:
             ok = False
             responseList.append(check)
-            answerList.append(answer)
+            answerList.append(answer[i])
             checkPointList.append(checkPoint)
-
+        i+=1
     
     if ok:
         print("学籍番号{}:正解".format(studentID))
     else:
-        print("学籍番号{}:不正解\n".format(studentID))
+        print("学籍番号{}:不正解\n不正解入力ケース数:{}\n".format(studentID, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
 
-def checkKadaiString(check: List[str], answer: List[str]):
-    
-    if answer in check:
-        print("OK")
+#数字ではなく，出力結果の文字列を確認して採点する
+def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]]):
+    ok = True
+    responseList = []
+    answerList = []
+    checkPointList = []
+
+    for i in range(len(outputResults)):
+        #print(answer[i][0], outputResults[i])
+        if answer[i][0] not in outputResults[i]:
+            ok = False
+            responseList.append(check)
+            answerList.append(answer[i])
+            checkPointList.append(checkPoint)
+
+    if ok:
+        print("学籍番号{}:正解".format(studentID))
     else:
-        print("NG")
-        print("実行結果:{}".format(check))
-        print("正解：{}".format(answer))
+        print("学籍番号{}:不正解\n不正解入力ケース数:{}\n".format(studentID, len(responseList)))
+        for i in range(len(responseList)):
+            print("実行結果:{}".format(responseList[i]))
+            print("チェックポイント:{}".format(checkPointList[i]))
+            print("正解の実行結果：{}\n".format(answerList[i]))
+
+
+def parseJsonAndGetAnswers(kadaiNum: str) -> List[List[int]]:
+    answerList = []
+    
+    jsonPath = "inputCaseHoge.json"
+    f = open(jsonPath, "r")
+    jsonDict = json.load(f)
+    kadaiDict = jsonDict[kadaiNum]
+    
+    for i in range(1, kadaiDict["numberOfInputCases"]+1):
+        #print(kadaiDict["inputCases"]["inputCase{}".format(i)])
+        answerList.append(kadaiDict["inputCases"]["inputCase{}".format(i)]["answer"])
+    
+    return answerList
 
 
 if __name__ == "__main__":
-    answer = ["2", "2"]
-    checkList, studentID = exeKadai()
-    checkKadai(checkList, studentID, answer)
+    # answer = [["2", "2"], ["2", "4"]]
+    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
+    outputResult, studentID = exeKadai(shFile = "hoge.sh")
+    checkKadai(outputResult, studentID, answerList)
+
+    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon2")
+    outputResult, studentID = exeKadai(shFile = "shHoge2.sh")
+    print(outputResult, studentID, answerList)
+    checkKadaiString(outputResult, studentID, answerList)
     #checkKadaiString(exeKadai(), "閏年です")
+    

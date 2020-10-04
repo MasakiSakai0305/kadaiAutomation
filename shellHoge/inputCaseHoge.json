@@ -1,0 +1,29 @@
+{
+    "kihon1":{
+        "numberOfInputCases":2, 
+        "inputCases":{
+            "inputCase1":{
+                "input":["2", "2"],
+                "answer":["1", "2"]
+            },
+            "inputCase2":{
+                "input":["3", "2"],
+                "answer":["2", "2"]
+            }
+        }
+    },
+    "kihon2":{
+        "numberOfInputCases":2, 
+        "inputCases":{
+            "inputCase1":{
+                "input":["1"],
+                "answer":["閏年です"]
+            },
+            "inputCase2":{
+                "input":["2"],
+                "answer":["閏年ではありません"]
+            }
+        }
+    }
+
+}
