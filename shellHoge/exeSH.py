@@ -12,12 +12,12 @@ import json
 結論：shファイルから出力結果を得て，採点を自動化したいなら，学生一人毎の問題ごとのshファイルが必要になる．
 例；一班10人，問題が４つ → 40個の.shが必要になる
 """
-print(subprocess.check_output("./hoge.sh"))
-print(type(subprocess.check_output("./hoge.sh")))
-decoded = subprocess.check_output("./hoge.sh").decode("utf-8")
-print(decoded, type(decoded))
-print(decoded.split())
-print(re.findall(r'\d+', decoded))
+# print(subprocess.check_output("./hoge.sh"))
+# print(type(subprocess.check_output("./hoge.sh")))
+# decoded = subprocess.check_output("./hoge.sh").decode("utf-8")
+# print(decoded, type(decoded))
+# print(decoded.split())
+# print(re.findall(r'\d+', decoded))
 
 #shファイルを実行して課題ファイル(.c)をコンパイル → 実行
 def exeKadai(shFile: str) -> (List[str], str):
@@ -30,7 +30,7 @@ def exeKadai(shFile: str) -> (List[str], str):
     return outputResult, studentID
 
 #出力結果の数字を確認して採点する
-def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]]):
+def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
     ok = True
     responseList = []
     answerList = []
@@ -46,33 +46,33 @@ def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]]
         i+=1
     
     if ok:
-        print("学籍番号{}:正解".format(studentID))
+        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
     else:
-        print("学籍番号{}:不正解\n不正解入力ケース数:{}\n".format(studentID, len(responseList)))
+        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
 
 #数字ではなく，出力結果の文字列を確認して採点する
-def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]]):
+def checkKadaiString(outputResult: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
     ok = True
     responseList = []
     answerList = []
     checkPointList = []
 
-    for i in range(len(outputResults)):
+    for i in range(len(outputResult)):
         #print(answer[i][0], outputResults[i])
-        if answer[i][0] not in outputResults[i]:
+        if answer[i][0] not in outputResult[i]:
             ok = False
             responseList.append(check)
             answerList.append(answer[i])
             checkPointList.append(checkPoint)
 
     if ok:
-        print("学籍番号{}:正解".format(studentID))
+        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
     else:
-        print("学籍番号{}:不正解\n不正解入力ケース数:{}\n".format(studentID, len(responseList)))
+        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("チェックポイント:{}".format(checkPointList[i]))
@@ -98,11 +98,11 @@ if __name__ == "__main__":
     # answer = [["2", "2"], ["2", "4"]]
     answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
     outputResult, studentID = exeKadai(shFile = "hoge.sh")
-    checkKadai(outputResult, studentID, answerList)
+    checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")
 
     answerList = parseJsonAndGetAnswers(kadaiNum = "kihon2")
     outputResult, studentID = exeKadai(shFile = "shHoge2.sh")
     print(outputResult, studentID, answerList)
-    checkKadaiString(outputResult, studentID, answerList)
+    checkKadaiString(outputResult, studentID, answerList, kadaiNum = "kihon2")
     #checkKadaiString(exeKadai(), "閏年です")
     
