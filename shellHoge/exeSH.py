@@ -19,22 +19,41 @@ print(decoded.split())
 print(re.findall(r'\d+', decoded))
 
 
-def exeKadai() -> str:
+def exeKadai() -> (List[str], str):
     shFile = "hoge.sh"
-    kaito = subprocess.check_output("./{}".format(shFile)).decode("utf-8")
-    return kaito
 
-def checkKadai(check: str, answer: List[str]):
-    checkPoint = re.findall(r'\d+', check)
-    if checkPoint == answer:
-        print("OK")
+    #shファイル出力結果
+    outputResult = subprocess.check_output("./{}".format(shFile)).decode("utf-8").split()
+    
+    studentID = outputResult.pop(-1)
+    #print("outputResult:{}".format(outputResult))
+    return outputResult, studentID
+
+def checkKadai(checkList: List[str], studentID: str,  answer: List[str]):
+    ok = True
+    responseList = []
+    answerList = []
+    checkPointList = []
+    for check in checkList:
+        checkPoint = re.findall(r'\d+', check)
+ 
+        if checkPoint != answer:
+            ok = False
+            responseList.append(check)
+            answerList.append(answer)
+            checkPointList.append(checkPoint)
+
+    
+    if ok:
+        print("学籍番号{}:正解".format(studentID))
     else:
-        print("NG")
-        print("実行結果:{}".format(check))
-        print("正解：{}".format(answer))
+        print("学籍番号{}:不正解\n".format(studentID))
+        for i in range(len(responseList)):
+            print("実行結果:{}".format(responseList[i]))
+            print("チェックポイント:{}".format(checkPointList[i]))
+            print("正解の実行結果：{}\n".format(answerList[i]))
 
-
-def checkKadaiString(check: str, answer: List[str]):
+def checkKadaiString(check: List[str], answer: List[str]):
     
     if answer in check:
         print("OK")
@@ -45,7 +64,7 @@ def checkKadaiString(check: str, answer: List[str]):
 
 
 if __name__ == "__main__":
-    print("a")
     answer = ["2", "2"]
-    # checkKadai(exeKadai(), answer)
-    checkKadaiString(exeKadai(), "閏年です")
+    checkList, studentID = exeKadai()
+    checkKadai(checkList, studentID, answer)
+    #checkKadaiString(exeKadai(), "閏年です")
