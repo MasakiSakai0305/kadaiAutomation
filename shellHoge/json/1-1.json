@@ -1,0 +1,20 @@
+{
+    "kihon1":{
+        "numberOfInputCases":3, 
+        "inputCases":{
+            "inputCase1":{
+                "input":["100"],
+                "answer":["1100"]
+            },
+            "inputCase2":{
+                "input":["5"],
+                "answer":["5"]
+            },
+            "inputCase3":{
+                "input":["0"],
+                "answer":["0"]
+            }
+        }
+    }
+
+}

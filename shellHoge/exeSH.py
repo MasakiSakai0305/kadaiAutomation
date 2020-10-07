@@ -2,6 +2,7 @@ import subprocess
 import re
 from typing import List
 import json
+import os
 
 # print(subprocess.call(['cat', 'hello.py'])) # 0
 # # 標準入力・標準出力を指定する（2つ目はhello2.pyが作成される）
@@ -24,9 +25,14 @@ def exeKadai(shFile: str) -> (List[str], str):
 
     #shファイル出力結果
     outputResult = subprocess.check_output("./{}".format(shFile)).decode("utf-8").split()
-    
     studentID = outputResult.pop(-1)
-    #print("outputResult:{}".format(outputResult))
+    # outputResultForCheck = []
+    # for output in outputResult:
+    #     if keyword in output:
+    #         outputResultForCheck.append(output)
+
+    # print("outputResult:{}".format(outputResultForCheck))
+    # exit()
     return outputResult, studentID
 
 #出力結果の数字を確認して採点する
@@ -79,10 +85,12 @@ def checkKadaiString(outputResult: List[str], studentID: str,  answer: List[List
             print("正解の実行結果：{}\n".format(answerList[i]))
 
 
-def parseJsonAndGetAnswers(kadaiNum: str) -> List[List[int]]:
+def parseJsonAndGetAnswers(kadaiNum: str) -> (List[List[int]]):
     answerList = []
     
-    jsonPath = "inputCaseHoge.json"
+    # jsonPath = "json/inputCaseHoge.json"
+    jsonPath = "json/1-1.json"
+
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
     kadaiDict = jsonDict[kadaiNum]
@@ -96,13 +104,19 @@ def parseJsonAndGetAnswers(kadaiNum: str) -> List[List[int]]:
 
 if __name__ == "__main__":
     # answer = [["2", "2"], ["2", "4"]]
-    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
-    outputResult, studentID = exeKadai(shFile = "hoge.sh")
-    checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")
+    # answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
+    # outputResult, studentID = exeKadai(shFile = "hoge.sh")
+    # checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")
 
-    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon2")
-    outputResult, studentID = exeKadai(shFile = "shHoge2.sh")
-    print(outputResult, studentID, answerList)
-    checkKadaiString(outputResult, studentID, answerList, kadaiNum = "kihon2")
+    # answerList = parseJsonAndGetAnswers(kadaiNum = "kihon2")
+    # outputResult, studentID = exeKadai(shFile = "shHoge2.sh")
+    # print(outputResult, studentID, answerList)
+    # checkKadaiString(outputResult, studentID, answerList, kadaiNum = "kihon2")
     #checkKadaiString(exeKadai(), "閏年です")
     
+    
+    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
+    os.chdir("scriptAndprogram/")
+    outputResult, studentID = exeKadai(shFile = "kihon1-1_24.sh")
+    print(outputResult, studentID, answerList)
+    checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")

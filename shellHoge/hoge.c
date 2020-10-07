@@ -10,7 +10,14 @@ int main(void){
 	// 	printf("閏年です\n");
 	// else
 	// 	printf("閏年ではありません\n");
+
+	// int i;
+	// for (i=0; i<4; i++){
+	// 	printf("%d,", i);
+	// }
+	// printf("\n");
 	return 0;
+	
 
 }
 
