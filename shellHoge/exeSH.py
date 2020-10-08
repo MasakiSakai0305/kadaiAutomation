@@ -22,6 +22,17 @@ import os
 
 #shファイルを実行して課題ファイル(.c)をコンパイル → 実行 → 出力結果取得
 def executeKadaiAndGetOutputResult(shFile: str) -> (List[str]):
+    """
+    shファイルを実行し，出力結果を取得する
+    shファイル実行にはsubprocessモジュールを使用
+
+    args
+        shFile: str
+        shファイルの名前(.sh拡張子付き)
+
+    returns
+        outputResult: List[str]
+    """
 
     #shファイル出力結果
     outputResult = subprocess.check_output("./{}".format(shFile)).decode("utf-8").split()
@@ -36,11 +47,49 @@ def executeKadaiAndGetOutputResult(shFile: str) -> (List[str]):
 
 #shファイルから学籍番号を取得
 def getStudentID(filename: str) -> str:
+    """
+    shファイルから学籍番号を返す
+    splitで区切った文字列の後ろ7文字を取得
+
+    args
+        filename: str
+        shファイルの名前(.sh拡張子付き)
+
+    return
+        List[str]
+
+    examaple
+        入力引数: kihon1-1-AL20001.sh
+        返り値: AL20001
+    """
+
     return filename.split(".sh")[0][-7:]
 
 
 #出力結果の数字を確認して採点する
 def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+    """
+    出力結果から課題の正解・不正解を判定
+    出力結果の数値を見て判定する
+
+    args
+        outputResults: List[str]
+            shファイル出力結果，executeKadaiAndGetOutputResult関数から取得したもの
+
+        studentID: str 
+            学籍番号,getStudentID関数から取得したもの
+
+        answer: List[List[str]]
+            課題の正解の出力結果，parseJsonAndGetAnswers関数から取得
+            課題ごとのanswerを持つ
+
+        kadaiNum: str
+            課題番号
+            例：kihon1
+
+    return
+        なし
+    """
     ok = True
     responseList = []
     answerList = []
@@ -69,6 +118,29 @@ def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]
 
 #数字ではなく，出力結果の文字列を確認して採点する
 def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+    """
+    出力結果から課題の正解・不正解を判定
+    出力結果の文字列を見て判定する
+
+    args
+        outputResults: List[str]
+            shファイル出力結果，executeKadaiAndGetOutputResult関数から取得したもの
+
+        studentID: str 
+            学籍番号,getStudentID関数から取得したもの
+
+        answer: List[List[str]]
+            課題の正解の出力結果，parseJsonAndGetAnswers関数から取得
+            課題ごとのanswerを持つ
+
+        kadaiNum: str
+            課題番号
+            例：kihon1
+
+    return
+        なし
+    """
+    
     ok = True
     responseList = []
     answerList = []
@@ -93,6 +165,21 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
 
 
 def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
+    """
+    jsonをパースして，正解の出力結果を取得
+
+    args
+        jsonPath: str
+            jsonファイルのパス
+
+        kadaiNum: str
+            課題番号
+            例：kihon1
+
+    return
+        answerList: List[List[int]]
+            複数回実行ケースがあり，その分の正解の出力結果をリストに格納
+    """
     answerList = []
     
     # jsonPath = "json/inputCaseHoge.json"
@@ -109,6 +196,27 @@ def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
     return answerList
 
 def parseJsonAndGetCheckPoint(jsonPath: str, kadaiNum: str) -> str:
+    """
+    jsonをパースして，チェックポイントを取得する
+    チェックポイントは，課題チェックの際の見るべきポイントを指す
+    数字チェックや文字列チェックがあるのでその際の判定に用いる．
+    exmple
+        figure: 数値を見る
+        string: 文字列を見る
+
+
+    args
+        jsonPath: str
+            jsonファイルのパス
+
+        kadaiNum: str
+            課題番号
+            例：kihon1
+
+    return
+        str
+    """
+
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
     kadaiDict = jsonDict[kadaiNum]
