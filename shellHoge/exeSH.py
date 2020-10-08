@@ -20,12 +20,11 @@ import os
 # print(decoded.split())
 # print(re.findall(r'\d+', decoded))
 
-#shファイルを実行して課題ファイル(.c)をコンパイル → 実行
-def exeKadai(shFile: str) -> (List[str], str):
+#shファイルを実行して課題ファイル(.c)をコンパイル → 実行 → 出力結果取得
+def executeKadaiAndGetOutputResult(shFile: str) -> (List[str]):
 
     #shファイル出力結果
     outputResult = subprocess.check_output("./{}".format(shFile)).decode("utf-8").split()
-    studentID = outputResult.pop(-1)
     # outputResultForCheck = []
     # for output in outputResult:
     #     if keyword in output:
@@ -33,7 +32,12 @@ def exeKadai(shFile: str) -> (List[str], str):
 
     # print("outputResult:{}".format(outputResultForCheck))
     # exit()
-    return outputResult, studentID
+    return outputResult
+
+#shファイルから学籍番号を取得
+def getStudentID(filename: str) -> str:
+    id = filename.split("_")[1].split(".sh")[0]
+    return "AL200" + id
 
 #出力結果の数字を確認して採点する
 def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
@@ -117,6 +121,8 @@ if __name__ == "__main__":
     
     answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
     os.chdir("scriptAndprogram/")
-    outputResult, studentID = exeKadai(shFile = "kihon1-1_24.sh")
+
+    outputResult = executeKadaiAndGetOutputResult(shFile = "kihon1-1_24.sh")
+    studentID = getStudentID(filename="kihon1-1_24.sh")
     print(outputResult, studentID, answerList)
     checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")

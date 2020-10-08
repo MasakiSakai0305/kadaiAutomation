@@ -9,4 +9,3 @@ EOF
 ./kihon1-1-AL20024 << EOF
 0
 EOF
-echo AL20024

@@ -8,4 +8,3 @@ EOF
 2
 4
 EOF
-echo AL20010
