@@ -1,0 +1,42 @@
+{
+    "kihon1":{
+        "checkPoint": "figure",
+        "numberOfInputCases":3, 
+        "inputCases":{
+            "inputCase1":{
+                "input":["100"],
+                "answer":["1100"]
+            },
+            "inputCase2":{
+                "input":["5"],
+                "answer":["5"]
+            },
+            "inputCase3":{
+                "input":["0"],
+                "answer":["0"]
+            }
+        }
+    },
+    "kihon2":{
+        "checkPoint": "string",
+        "numberOfInputCases":4, 
+        "inputCases":{
+            "inputCase1":{
+                "input":["1"],
+                "answer":["奇数"]
+            },
+            "inputCase2":{
+                "input":["2"],
+                "answer":["奇数"]
+            },
+            "inputCase3":{
+                "input":["0"],
+                "answer":["正の整数では"]
+            },
+            "inputCase4":{
+                "input":["-1"],
+                "answer":["正の整数では"]
+            }
+        }
+    }
+}

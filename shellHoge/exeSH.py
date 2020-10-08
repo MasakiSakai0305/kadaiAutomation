@@ -36,21 +36,23 @@ def executeKadaiAndGetOutputResult(shFile: str) -> (List[str]):
 
 #shファイルから学籍番号を取得
 def getStudentID(filename: str) -> str:
-    id = filename.split("_")[1].split(".sh")[0]
-    return "AL200" + id
+    return filename.split(".sh")[0][-7:]
+
 
 #出力結果の数字を確認して採点する
-def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
     ok = True
     responseList = []
     answerList = []
     checkPointList = []
     i=0
-    for check in outputResult:
-        checkPoint = re.findall(r'\d+', check)
+    for outputResult in outputResults:
+        checkPoint = re.findall(r'\d+', outputResult)
+
+        #answerと実行出力結果をチェック
         if checkPoint != answer[i]:
             ok = False
-            responseList.append(check)
+            responseList.append(outputResult)
             answerList.append(answer[i])
             checkPointList.append(checkPoint)
         i+=1
@@ -64,36 +66,37 @@ def checkKadai(outputResult: List[str], studentID: str,  answer: List[List[str]]
             print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
 
+
 #数字ではなく，出力結果の文字列を確認して採点する
-def checkKadaiString(outputResult: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
     ok = True
     responseList = []
     answerList = []
-    checkPointList = []
-
-    for i in range(len(outputResult)):
-        #print(answer[i][0], outputResults[i])
-        if answer[i][0] not in outputResult[i]:
+    i=0
+    
+    for outputResult in outputResults:
+        
+        #answerと実行出力結果をチェック
+        if answer[i][0] not in outputResult:
             ok = False
-            responseList.append(check)
+            responseList.append(outputResult)
             answerList.append(answer[i])
-            checkPointList.append(checkPoint)
-
+            
+        i+=1
     if ok:
         print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
     else:
         print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
-            print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
 
 
-def parseJsonAndGetAnswers(kadaiNum: str) -> (List[List[int]]):
+def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
     answerList = []
     
     # jsonPath = "json/inputCaseHoge.json"
-    jsonPath = "json/1-1.json"
+    #jsonPath = "json/1-1.json"
 
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
@@ -104,6 +107,14 @@ def parseJsonAndGetAnswers(kadaiNum: str) -> (List[List[int]]):
         answerList.append(kadaiDict["inputCases"]["inputCase{}".format(i)]["answer"])
     
     return answerList
+
+def parseJsonAndGetCheckPoint(jsonPath: str, kadaiNum: str) -> str:
+    f = open(jsonPath, "r")
+    jsonDict = json.load(f)
+    kadaiDict = jsonDict[kadaiNum]
+
+    return kadaiDict["checkPoint"]
+
 
 
 if __name__ == "__main__":
@@ -119,10 +130,10 @@ if __name__ == "__main__":
     #checkKadaiString(exeKadai(), "閏年です")
     
     
-    answerList = parseJsonAndGetAnswers(kadaiNum = "kihon1")
+    answerList = parseJsonAndGetAnswers(jsonPath="json/1-1.json",kadaiNum = "kihon1")
     os.chdir("scriptAndprogram/")
 
-    outputResult = executeKadaiAndGetOutputResult(shFile = "kihon1-1_24.sh")
-    studentID = getStudentID(filename="kihon1-1_24.sh")
+    outputResult = executeKadaiAndGetOutputResult(shFile = "kihon1-1-AL20024.sh")
+    studentID = getStudentID(filename="kihon1-1-AL20024.sh")
     print(outputResult, studentID, answerList)
     checkKadai(outputResult=outputResult, studentID=studentID, answer=answerList, kadaiNum = "kihon1")
