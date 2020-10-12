@@ -67,7 +67,7 @@ def getStudentID(filename: str) -> str:
 
 
 #出力結果の数字を確認して採点する
-def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str) -> bool:
     """
     出力結果から課題の正解・不正解を判定
     出力結果の数値を見て判定する
@@ -88,7 +88,8 @@ def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]
             例：kihon1
 
     return
-        なし
+        bool
+        正解:True, 不正解:False
     """
     ok = True
     responseList = []
@@ -108,16 +109,18 @@ def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]
     
     if ok:
         print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        return True
     else:
         print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
+        return False
 
 
 #数字ではなく，出力結果の文字列を確認して採点する
-def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str):
+def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str) -> bool:
     """
     出力結果から課題の正解・不正解を判定
     出力結果の文字列を見て判定する
@@ -138,7 +141,8 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
             例：kihon1
 
     return
-        なし
+        bool
+        正解:True, 不正解:False
     """
     
     ok = True
@@ -157,12 +161,13 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
         i+=1
     if ok:
         print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        return True
     else:
         print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
-
+        return False
 
 def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
     """

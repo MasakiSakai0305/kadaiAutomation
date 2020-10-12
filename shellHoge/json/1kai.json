@@ -27,7 +27,7 @@
             },
             "inputCase2":{
                 "input":["2"],
-                "answer":["奇数"]
+                "answer":["偶数"]
             },
             "inputCase3":{
                 "input":["0"],

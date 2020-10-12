@@ -72,7 +72,7 @@ class jugyoKadai:
             uncheckedKadaiFiles: List[str]
         """
         uncheckedKadaiFiles = []
-        filePath = path = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
+        filePath = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
         with open(filePath, "r") as f:
             checkedFiles = [s.strip() for s in f.readlines()]
             
@@ -83,18 +83,23 @@ class jugyoKadai:
         print(uncheckedKadaiFiles)
         return uncheckedKadaiFiles
 
-    def writeCheckedKadaiToLogFile(self, kadaiFileName: str):
+    def writeCheckedKadaiToLogFile(self, kadaiFileName: str, result: bool):
         """
         実行した課題名(ex, kihon1-1-AL20023)をログファイルへ記載する
-
+        正解の時のみ記載する，不正解の時が記載しない
         args
             kadaiFileName: str,  学生の課題のファイル名（.c拡張子なし）
-            例：kihon1-1-AL20024
+                例：kihon1-1-AL20024
+            result: bool
+                正解:True, 不正解:False
         """
-        filePath = path = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
-        with open(filePath, "a") as f:
-            f.write("\n" + kadaiFileName)
-            print("kadaiFileName:{}".format(kadaiFileName))            
+        #print(os.getcwd())
+        #print(result)
+        if result:
+            filePath = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
+            with open(filePath, "a") as f:
+                f.write("\n" + kadaiFileName)
+                print("kadaiFileName:{}".format(kadaiFileName))            
 
 
 
@@ -131,11 +136,13 @@ class jugyoKadai:
         #print(outputResult, studentID, answerList)
 
         if checkPoint == "figure":
-            checkKadai(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
+            result = checkKadai(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
         elif checkPoint == "string":
-            checkKadaiString(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
+            result = checkKadaiString(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
         os.chdir("../..")
-
+        print(os.getcwd())
+        self.writeCheckedKadaiToLogFile(kadaiFileName=kadaiFileName, result=result)
+        
 
 if __name__ == "__main__":
     hoge = jugyoKadai(jugyoNo=1, kihonNum=1,hattenNum=0)
