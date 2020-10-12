@@ -54,7 +54,7 @@ class jugyoKadai:
         path = "kadaiPrograms/{}kai".format(self.jugyoNo)
         listdir = os.listdir(path)
         files = [f for f in listdir if os.path.isfile(os.path.join(path, f))]
-        kadaiFiles = [cFile for cFile in files if os.path.splitext(cFile)[1] == ".c"]
+        kadaiFiles = [cFile.split(".c")[0] for cFile in files if os.path.splitext(cFile)[1] == ".c"]
         return kadaiFiles
 
     def listUncheckedKadai(self, kadaiFiles: List[str]) -> List[str]:
@@ -83,6 +83,20 @@ class jugyoKadai:
         print(uncheckedKadaiFiles)
         return uncheckedKadaiFiles
 
+    def writeCheckedKadaiToLogFile(self, kadaiFileName: str):
+        """
+        実行した課題名(ex, kihon1-1-AL20023)をログファイルへ記載する
+
+        args
+            kadaiFileName: str,  学生の課題のファイル名（.c拡張子なし）
+            例：kihon1-1-AL20024
+        """
+        filePath = path = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
+        with open(filePath, "a") as f:
+            f.write("\n" + kadaiFileName)
+            print("kadaiFileName:{}".format(kadaiFileName))            
+
+
 
     def executeSHFile(self, kadaiFileName: str):
         """
@@ -101,7 +115,7 @@ class jugyoKadai:
             この場合，出力値で見るべきポイントは閏年「である」，「ではない」となる．
 
         args
-            kadaiFileName， 学生の課題のファイル名（.c拡張子なし）
+            kadaiFileName: str,  学生の課題のファイル名（.c拡張子なし）
             例：kihon1-1-AL20024
         """
 
@@ -128,3 +142,4 @@ if __name__ == "__main__":
     hoge.checkKadaiByExecuteSHFile()
     
     hoge.listUncheckedKadai(kadaiFiles=hoge.searchCProgramFile())
+    
