@@ -11,6 +11,7 @@ from typing import List
 import json
 import os
 
+
 class jugyoKadai:
     def __init__(self, jugyoNo, kihonNum, hattenNum):
         #授業の回数(n回目)
@@ -40,25 +41,27 @@ class jugyoKadai:
             self.executeSHFile(kadaiFileName=check)
         pass
     
-    def searchCProgramFile(self):
+    def searchCProgramFile(self) -> List[str]:
         """
-        ディレクトリ内を探索し，まだチェックしてない課題(cファイル)をリストとして返す
+        ディレクトリ内を探索し，全ての課題のファイル名をリストとして返す
 
         return
             ディレクトリ内の全ての課題のファイル名が格納されているリスト
             kadaiFiles: List[str]
         
         """
-        
+
         path = "kadaiPrograms/{}kai".format(self.jugyoNo)
         listdir = os.listdir(path)
         files = [f for f in listdir if os.path.isfile(os.path.join(path, f))]
         kadaiFiles = [cFile for cFile in files if os.path.splitext(cFile)[1] == ".c"]
         return kadaiFiles
 
-    def listUncheckedKadai(self, ):
+    def listUncheckedKadai(self, kadaiFiles: List[str]) -> List[str]:
         """
         ディレクトリ内の課題名リスト受け取り，チェックしていない課題のファイル名のみをリストとして返す．
+        1. logファイル(チェックしている課題名のみ記載されている)をオープン
+        2. 記載されていないもののみ，抽出してリスト化
 
         args
             全ての課題のファイル名が格納されているリスト
@@ -68,9 +71,18 @@ class jugyoKadai:
             まだチェックしていないファイル名が格納されているリスト
             uncheckedKadaiFiles: List[str]
         """
+        uncheckedKadaiFiles = []
+        filePath = path = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
+        with open(filePath, "r") as f:
+            checkedFiles = [s.strip() for s in f.readlines()]
+            
 
+        for kadai in kadaiFiles:
+            if kadai not in checkedFiles:
+                uncheckedKadaiFiles.append(kadai)
+        print(uncheckedKadaiFiles)
+        return uncheckedKadaiFiles
 
-        pass
 
     def executeSHFile(self, kadaiFileName: str):
         """
@@ -114,4 +126,5 @@ class jugyoKadai:
 if __name__ == "__main__":
     hoge = jugyoKadai(jugyoNo=1, kihonNum=1,hattenNum=0)
     hoge.checkKadaiByExecuteSHFile()
-    hoge.searchCProgramFile()
+    
+    hoge.listUncheckedKadai(kadaiFiles=hoge.searchCProgramFile())
