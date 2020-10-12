@@ -49,7 +49,12 @@ class jugyoKadai:
             kadaiFiles: List[str]
         
         """
-        pass
+        
+        path = "kadaiPrograms/{}kai".format(self.jugyoNo)
+        listdir = os.listdir(path)
+        files = [f for f in listdir if os.path.isfile(os.path.join(path, f))]
+        kadaiFiles = [cFile for cFile in files if os.path.splitext(cFile)[1] == ".c"]
+        return kadaiFiles
 
     def listUncheckedKadai(self, ):
         """
@@ -63,6 +68,8 @@ class jugyoKadai:
             まだチェックしていないファイル名が格納されているリスト
             uncheckedKadaiFiles: List[str]
         """
+
+
         pass
 
     def executeSHFile(self, kadaiFileName: str):
@@ -107,3 +114,4 @@ class jugyoKadai:
 if __name__ == "__main__":
     hoge = jugyoKadai(jugyoNo=1, kihonNum=1,hattenNum=0)
     hoge.checkKadaiByExecuteSHFile()
+    hoge.searchCProgramFile()
