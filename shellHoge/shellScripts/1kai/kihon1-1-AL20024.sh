@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ../../kadaiPrograms/1kai
 gcc kihon1-1-AL20024.c -o kihon1-1-AL20024
 ./kihon1-1-AL20024 << EOF
 100

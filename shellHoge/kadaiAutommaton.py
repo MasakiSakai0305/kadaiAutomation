@@ -40,13 +40,28 @@ class jugyoKadai:
             self.executeSHFile(kadaiFileName=check)
         pass
     
-    def searchCProgramFile(self, parameter_list):
+    def searchCProgramFile(self):
         """
         ディレクトリ内を探索し，まだチェックしてない課題(cファイル)をリストとして返す
 
         return
-        kadaiSHFiles: List[str]
-        実行する課題のファイル名が格納されているリスト
+            ディレクトリ内の全ての課題のファイル名が格納されているリスト
+            kadaiFiles: List[str]
+        
+        """
+        pass
+
+    def listUncheckedKadai(self, ):
+        """
+        ディレクトリ内の課題名リスト受け取り，チェックしていない課題のファイル名のみをリストとして返す．
+
+        args
+            全ての課題のファイル名が格納されているリスト
+            kadaiFiles: List[str]
+
+        return
+            まだチェックしていないファイル名が格納されているリスト
+            uncheckedKadaiFiles: List[str]
         """
         pass
 
@@ -67,7 +82,8 @@ class jugyoKadai:
             この場合，出力値で見るべきポイントは閏年「である」，「ではない」となる．
 
         args
-        kadaiFileName，例：kihon1-1-AL20024
+            kadaiFileName， 学生の課題のファイル名（.c拡張子なし）
+            例：kihon1-1-AL20024
         """
 
 
@@ -75,7 +91,7 @@ class jugyoKadai:
         shFile = kadaiFileName+".sh"
         answerList = parseJsonAndGetAnswers(jsonPath="json/{}kai.json".format(self.jugyoNo), kadaiNum=kadaiNum)
         checkPoint = parseJsonAndGetCheckPoint(jsonPath="json/{}kai.json".format(self.jugyoNo), kadaiNum=kadaiNum)
-        os.chdir("scriptAndprogram/")
+        os.chdir("shellScripts/{}kai".format(self.jugyoNo))
 
         outputResult = executeKadaiAndGetOutputResult(shFile=shFile)
         studentID = getStudentID(filename=shFile)
@@ -85,7 +101,7 @@ class jugyoKadai:
             checkKadai(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
         elif checkPoint == "string":
             checkKadaiString(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
-        os.chdir("..")
+        os.chdir("../..")
 
 
 if __name__ == "__main__":
