@@ -52,6 +52,7 @@ class jugyoKadai:
 
     def executeSHFile(self, kadaiFileName: str):
         """
+        checkKadaiByExecuteSHFile関数内で呼ばれる．
         実行課題ファイル名に応じて，shファイルを実行する．
         shファイル実行の際に，チェックポイントに応じて使用する関数を選ぶ．
         課題の中には，数値を元にチェックを行うものや，文字列を元にチェックするものがある．
@@ -72,8 +73,8 @@ class jugyoKadai:
 
         kadaiNum = kadaiFileName[:5] + kadaiFileName[7]
         shFile = kadaiFileName+".sh"
-        answerList = parseJsonAndGetAnswers(jsonPath="json/1kai.json", kadaiNum=kadaiNum)
-        checkPoint = parseJsonAndGetCheckPoint(jsonPath="json/1kai.json", kadaiNum=kadaiNum)
+        answerList = parseJsonAndGetAnswers(jsonPath="json/{}kai.json".format(self.jugyoNo), kadaiNum=kadaiNum)
+        checkPoint = parseJsonAndGetCheckPoint(jsonPath="json/{}kai.json".format(self.jugyoNo), kadaiNum=kadaiNum)
         os.chdir("scriptAndprogram/")
 
         outputResult = executeKadaiAndGetOutputResult(shFile=shFile)
