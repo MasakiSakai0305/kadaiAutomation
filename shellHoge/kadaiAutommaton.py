@@ -35,8 +35,9 @@ class jugyoKadai:
         4. 実行した課題の正解・不正解を表示
 
         """
-
-        for check in ["kihon1-1-AL20024", "kihon1-2-AL20024"]:
+        unCheckedKadaiList = self.listUncheckedKadai(kadaiFiles=self.searchCProgramFile())
+        print("unCheckedKadaiList:{}".format(unCheckedKadaiList))
+        for check in unCheckedKadaiList:
             print("check:{}".format(check))
             self.executeSHFile(kadaiFileName=check)
         pass
@@ -80,15 +81,17 @@ class jugyoKadai:
         for kadai in kadaiFiles:
             if kadai not in checkedFiles:
                 uncheckedKadaiFiles.append(kadai)
-        print(uncheckedKadaiFiles)
+        #print("uncheckedKadaiFiles:{}".format(uncheckedKadaiFiles))
         return uncheckedKadaiFiles
 
     def writeCheckedKadaiToLogFile(self, kadaiFileName: str, result: bool):
         """
         実行した課題名(ex, kihon1-1-AL20023)をログファイルへ記載する
         正解の時のみ記載する，不正解の時が記載しない
+
         args
-            kadaiFileName: str,  学生の課題のファイル名（.c拡張子なし）
+            kadaiFileName: str
+            学生の課題のファイル名（.c拡張子なし），まだ正解していなもののみが引数に入る
                 例：kihon1-1-AL20024
             result: bool
                 正解:True, 不正解:False
@@ -99,7 +102,7 @@ class jugyoKadai:
             filePath = "kadaiPrograms/{}kai/kadaiCheckLog.csv".format(self.jugyoNo)
             with open(filePath, "a") as f:
                 f.write("\n" + kadaiFileName)
-                print("kadaiFileName:{}".format(kadaiFileName))            
+                #print("kadaiFileName:{}".format(kadaiFileName))            
 
 
 
@@ -140,7 +143,6 @@ class jugyoKadai:
         elif checkPoint == "string":
             result = checkKadaiString(outputResults=outputResult, studentID=studentID, answer=answerList, kadaiNum=kadaiNum)
         os.chdir("../..")
-        print(os.getcwd())
         self.writeCheckedKadaiToLogFile(kadaiFileName=kadaiFileName, result=result)
         
 
