@@ -49,8 +49,11 @@ def executeExeFile(jugyoNum: int, kihonDict: dict, hattenDict: dict, execFiles: 
     for i in range(1, len(hattenDict)+1):
         print("発展課題{}: ".format(i) + str(hattenDict["hatten{}".format(i)]))
 
-    
-def calcKihonAndHatten(kihonNum: int, hattenNum: int, files: List[str]):
+    for i, execFile in enumerate(execFiles):
+        print('\n[{}/{}]*****{}*****'.format(i+1, len(execFiles), execFile))
+
+
+def calcKihonAndHatten(kihonNum: int, hattenNum: int, execFiles: List[str]):
     kihonDict={}
     hattenDict={}
     for i in range(1, kihonNum+1):
@@ -58,13 +61,13 @@ def calcKihonAndHatten(kihonNum: int, hattenNum: int, files: List[str]):
     for i in range(1, hattenNum+1):
         hattenDict["hatten{}".format(i)]=[]
 
-    for file in files:
-        if "kihon" in file:
-            kadaiNum = file.split("-")[1][0]
-            kihonDict["kihon{}".format(kadaiNum)].append(file)
-        if "hatten" in file:
-            kadaiNum = file.split("-")[1][0]
-            hattenDict["hatten{}".format(kadaiNum)].append(file)
+    for execFile in execFiles:
+        if "kihon" in execFile:
+            kadaiNum = execFile.split("-")[1][0]
+            kihonDict["kihon{}".format(kadaiNum)].append(execFile)
+        if "hatten" in execFile:
+            kadaiNum = execFile.split("-")[1][0]
+            hattenDict["hatten{}".format(kadaiNum)].append(execFile)
     print(len(kihonDict))
     return kihonDict, hattenDict
 
@@ -76,6 +79,5 @@ if __name__ == "__main__":
     # compileError = compileAssignments(files)
 
     print(parseJsonAndGetInputCases(jugyoNum=1, kadaiNum="kihon1"))
-    print(calcKihonAndHatten(kihonNum=2, hattenNum=0, files=files))
-    k,h=calcKihonAndHatten(kihonNum=2, hattenNum=0, files=files)
+    k,h=calcKihonAndHatten(kihonNum=2, hattenNum=0, execFiles=execFiles)
     executeExeFile(jugyoNum=1,kihonDict=k, hattenDict=h, execFiles=execFiles)
