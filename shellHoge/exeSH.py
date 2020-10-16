@@ -108,15 +108,15 @@ def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]
         i+=1
     
     if ok:
-        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
-        return True
+        #print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        return True, None
     else:
         print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("チェックポイント:{}".format(checkPointList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
-        return False
+        return False, [responseList, answerList]
 
 
 #数字ではなく，出力結果の文字列を確認して採点する
@@ -160,16 +160,16 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
             
         i+=1
     if ok:
-        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
-        return True
+        #print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        return True, None
     else:
         print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
         for i in range(len(responseList)):
             print("実行結果:{}".format(responseList[i]))
             print("正解の実行結果：{}\n".format(answerList[i]))
-        return False
+        return False, [responseList, answerList]
 
-def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
+def parseJsonAndGetAnswers(jugyoNum: int) -> dict:
     """
     jsonをパースして，正解の出力結果を取得
 
@@ -182,25 +182,25 @@ def parseJsonAndGetAnswers(jsonPath: str, kadaiNum: str) -> (List[List[int]]):
             例：kihon1
 
     return
-        answerList: List[List[int]]
+        answersDict: dict
+            その回の全ての課題の正解出力を辞書型にして返す
             複数回実行ケースがあり，その分の正解の出力結果をリストに格納
     """
-    answerList = []
-    
-    # jsonPath = "json/inputCaseHoge.json"
-    #jsonPath = "json/1-1.json"
+    answersDict = {}
+    jsonPath = "./json/{}kai.json".format(jugyoNum)
 
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
-    kadaiDict = jsonDict[kadaiNum]
     
-    for i in range(1, kadaiDict["numberOfInputCases"]+1):
-        #print(kadaiDict["inputCases"]["inputCase{}".format(i)])
-        answerList.append(kadaiDict["inputCases"]["inputCase{}".format(i)]["answer"])
+    for kadaiNum in jsonDict:
+        answersDict[kadaiNum] = []
+        inputCases = jsonDict[kadaiNum]["inputCases"]
+        for inputCase in inputCases:
+            answersDict[kadaiNum].append(inputCases[inputCase]["answer"])
     
-    return answerList
+    return answersDict
 
-def parseJsonAndGetCheckPoint(jsonPath: str, kadaiNum: str) -> str:
+def parseJsonAndGetCheckPoint(kadaiNum: str, jugyoNum: int) -> str:
     """
     jsonをパースして，チェックポイントを取得する
     チェックポイントは，課題チェックの際の見るべきポイントを指す
@@ -221,7 +221,7 @@ def parseJsonAndGetCheckPoint(jsonPath: str, kadaiNum: str) -> str:
     return
         str
     """
-
+    jsonPath = "./json/{}kai.json".format(jugyoNum)
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
     kadaiDict = jsonDict[kadaiNum]
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     #checkKadaiString(exeKadai(), "閏年です")
     
     
-    answerList = parseJsonAndGetAnswers(jsonPath="json/1-1.json",kadaiNum = "kihon1")
+    answerList = parseJsonAndGetAnswers(jsonPath="./json/1kai.json",kadaiNum = "kihon1")
     os.chdir("scriptAndprogram/")
 
     outputResult = executeKadaiAndGetOutputResult(shFile = "kihon1-1-AL20024.sh")
