@@ -1,5 +1,7 @@
 import subprocess
 import os
+import json
+from typing import List
 
 jugyoNum = 1
 path = "./kadaiPrograms/{}kai".format(jugyoNum)
@@ -24,8 +26,21 @@ def compileAssignments(specificFiles):
             os.remove('./kadaiPrograms/{}kai/exec/'.format(1) + file.rstrip('.c'))
     return compileError
 
+def parseJsonAndGetInputCases(jugyoNum:int, kadaiNum: str) -> List[List[str]]:
+    inputCasesList = []
+    f = open("./json/{}kai.json".format(jugyoNum), "r")
+    jsonDict = json.load(f)
+    kadaiDict = jsonDict[kadaiNum]
+    inputCases = kadaiDict["inputCases"]
+    for inputCase in inputCases:
+        #print(inputCase, inputCases[inputCase])
+        inputCasesList.append(inputCases[inputCase]["input"])
+    return inputCasesList
+
 if __name__ == "__main__":
     jugyoNum = 1
-    path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
-    files = os.listdir(path=path)
-    compileError = compileAssignments(files)
+    # path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
+    # files = os.listdir(path=path)
+    # compileError = compileAssignments(files)
+
+    print(parseJsonAndGetInputCases(jugyoNum=1, kadaiNum="kihon1"))
