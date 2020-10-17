@@ -2,7 +2,7 @@
 int main(void)
 {
   int x;
-  printf("正の整数を入力してください：");
+  printf("正の整数を入力してください：")
   scanf("%d",&x);
   if(x<=0){
     printf("%dは正の整数ではありません。\n",x);
