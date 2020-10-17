@@ -5,11 +5,11 @@
         "inputCases":{
             "inputCase1":{
                 "input":["100"],
-                "answer":["1100"]
+                "answer":["110"]
             },
             "inputCase2":{
                 "input":["5"],
-                "answer":["50"]
+                "answer":["5"]
             },
             "inputCase3":{
                 "input":["0"],

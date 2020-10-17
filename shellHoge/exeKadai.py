@@ -2,6 +2,7 @@ import subprocess
 import os
 import json
 from typing import List
+import shutil
 
 from exeSH import checkKadai
 from exeSH import checkKadaiString
@@ -17,8 +18,11 @@ def decodeByteToStr(byte_list: list) -> list:
 def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
     print('\n*****コンパイル状況*****\n')
     compileError = []
+    #logFilePath = "./kadaiPrograms/{}kai/kadaiCheckLog.csv".format(jugyoNum)
+    print("未チェックの課題:\n{}".format(specificFiles) + "\n")
+
     for i, file in enumerate(specificFiles):
-        print("file:{}".format(file))
+        # print("file:{}".format(file))
         p = subprocess.Popen(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(1) + file.replace('.c', '')], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout = p.stdout.readlines()
         stderr = p.stderr.readlines()
@@ -46,9 +50,10 @@ def parseJsonAndGetInputCases(jugyoNum:int) -> List[List[str]]:
     return inputCasesDict
 
 def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dict, execFiles: List[str]):
-    path = "./kadaiPrograms/{}kai/exec/".format(jugyoNum)
+    exePath = "./kadaiPrograms/{}kai/exec/".format(jugyoNum)
+    codesPath = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
     print('\n\n以下の内容でテストを実行します.')
-    print('テスト対象({}件):\n'.format(len(kihonDict) + len(hattenDict)))
+    print('テスト対象({}件):\n'.format(len(execFiles)))
 	
     # print('テストケース({}件):\n'.format(len(argSet)) + str(argSet))
     
@@ -74,7 +79,7 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
         
         for inputCase in inputCasesDict[execKadaiNum]:
             
-            p = subprocess.Popen([path + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             strArgs = '\n'.join(inputCase)
             o, e = p.communicate(input=strArgs.encode())
             print(o.decode())
@@ -89,6 +94,8 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
 
         if result:
             correctList.append(execFile)
+            shutil.move(exePath + execFile, exePath + "ok")
+            shutil.move(codesPath + execFile+".c", codesPath + "ok")
         else:
             incorrectList.append(execFile)
             incorrectResultList.append(incorrectResult)
@@ -113,13 +120,18 @@ def calcKihonAndHatten(kihonNum: int, hattenNum: int, execFiles: List[str]):
             hattenDict["hatten{}".format(kadaiNum)].append(execFile)
     return kihonDict, hattenDict
 
+
 if __name__ == "__main__":
     jugyoNum = 1
     path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
-    files = os.listdir(path=path)
-    print("files:{}".format(files))
+    lsitdir = os.listdir(path=path)
+    files = [f for f in lsitdir if os.path.isfile(os.path.join(path, f))]
+    #print("files:{}".format(files))
     compileError = compileAssignments(specificFiles=files, jugyoNum=jugyoNum)
-    execFiles = os.listdir(path="./kadaiPrograms/{}kai/exec/".format(jugyoNum))
+
+    lsitdir = os.listdir(path="./kadaiPrograms/{}kai/exec/".format(jugyoNum))
+    execFiles = [f for f in lsitdir if os.path.isfile(os.path.join("./kadaiPrograms/{}kai/exec/".format(jugyoNum), f))]
+    #print("execFiles:{}".format(execFiles))
     
     parseJsonAndGetInputCases(jugyoNum=1)
     k,h=calcKihonAndHatten(kihonNum=2, hattenNum=0, execFiles=execFiles)
