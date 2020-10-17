@@ -41,5 +41,46 @@
             }
         }
     },
-    "hatten":{}
+    "hatten":{
+        "hatten1":{
+            "checkPoint": "string",
+            "numberOfInputCases":3, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["2000"],
+                    "answer":["平成12"]
+                },
+                "inputCase2":{
+                    "input":["1912"],
+                    "answer":["大正元年"]
+                },
+                "inputCase3":{
+                    "input":["1998"],
+                    "answer":["平成10"]
+                }
+            }
+        },
+        "hatten2":{
+            "checkPoint": "string",
+            "numberOfInputCases":4, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["2001"],
+                    "answer":["では"]
+                },
+                "inputCase2":{
+                    "input":["2000"],
+                    "answer":["です"]
+                },
+                "inputCase3":{
+                    "input":["1900"],
+                    "answer":["では"]
+                },
+                "inputCase4":{
+                    "input":["2004"],
+                    "answer":["です"]
+                }
+            }
+        }
+    }
 }
