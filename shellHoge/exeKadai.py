@@ -23,7 +23,7 @@ def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
 
     for i, file in enumerate(specificFiles):
         # print("file:{}".format(file))
-        p = subprocess.Popen(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(1) + file.replace('.c', '')], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(jugyoNum) + file.replace('.c', '')], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout = p.stdout.readlines()
         stderr = p.stderr.readlines()
         print('対象ファイル: {0} ({1}/{2})'.format(file, i+1, len(specificFiles)))
@@ -140,7 +140,7 @@ def calcKihonAndHatten(jugyoNum: int,execFiles: List[str]):
 
 
 if __name__ == "__main__":
-    jugyoNum = 1
+    jugyoNum = 3
     path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
     lsitdir = os.listdir(path=path)
     files = [f for f in lsitdir if os.path.isfile(os.path.join(path, f))]
@@ -151,9 +151,9 @@ if __name__ == "__main__":
     execFiles = [f for f in lsitdir if os.path.isfile(os.path.join("./kadaiPrograms/{}kai/exec/".format(jugyoNum), f))]
     #print("execFiles:{}".format(execFiles))
     
-    parseJsonAndGetInputCases(jugyoNum=1)
+    parseJsonAndGetInputCases(jugyoNum=jugyoNum)
     k,h=calcKihonAndHatten(jugyoNum=jugyoNum,execFiles=execFiles)
-    executeExeFileAndCheckAnswer(jugyoNum=1,kihonDict=k, hattenDict=h, execFiles=execFiles)
+    executeExeFileAndCheckAnswer(jugyoNum=jugyoNum,kihonDict=k, hattenDict=h, execFiles=execFiles)
 
     print('\n*****コンパイルエラー*****\n')
     for error in compileError:

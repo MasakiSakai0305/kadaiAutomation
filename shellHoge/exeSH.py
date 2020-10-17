@@ -149,14 +149,17 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
     responseList = []
     answerList = []
     i=0
+    #print("outputResults:{}".format(outputResults))
     
     for outputResult in outputResults:
-        
+        #print("answer[i][0]:{}".format(answer[i]))
+            
         #answerと実行出力結果をチェック
-        if answer[i][0] not in outputResult:
-            ok = False
-            responseList.append(outputResult)
-            answerList.append(answer[i])
+        for j in range(len(answer[i])):
+            if answer[i][j] not in outputResult:
+                ok = False
+                responseList.append(outputResult)
+                answerList.append(answer[i])
             
         i+=1
     if ok:
