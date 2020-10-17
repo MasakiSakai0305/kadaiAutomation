@@ -37,16 +37,25 @@ def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
 
 def parseJsonAndGetInputCases(jugyoNum:int) -> List[List[str]]:
     inputCasesDict = {}
-    # inputCasesDict[kadaiNum] = []
+    inputCasesDict["kihon"] = {}
+    inputCasesDict["hatten"] = {}
+
     f = open("./json/{}kai.json".format(jugyoNum), "r")
     jsonDict = json.load(f)
 
-    for kadaiNum in jsonDict:
-        inputCasesDict[kadaiNum] = []
-        inputCases = jsonDict[kadaiNum]["inputCases"]
+    for kadaiNum in jsonDict["kihon"]:
+        inputCasesDict["kihon"][kadaiNum] = []
+        inputCases = jsonDict["kihon"][kadaiNum]["inputCases"]
         for inputCase in inputCases:
-            inputCasesDict[kadaiNum].append(inputCases[inputCase]["input"])
-    # print("inputCasesDict:{}".format(inputCasesDict))
+            inputCasesDict["kihon"][kadaiNum].append(inputCases[inputCase]["input"])
+
+    for kadaiNum in jsonDict["hatten"]:
+        inputCasesDict["hatten"][kadaiNum] = []
+        inputCases = jsonDict["hatten"][kadaiNum]["inputCases"]
+        for inputCase in inputCases:
+            inputCasesDict["hatten"][kadaiNum].append(inputCases[inputCase]["input"])
+
+    #print("inputCasesDict:{}".format(inputCasesDict))
     return inputCasesDict
 
 def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dict, execFiles: List[str]):
@@ -54,9 +63,7 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
     codesPath = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
     print('\n\n以下の内容でテストを実行します.')
     print('テスト対象({}件):\n'.format(len(execFiles)))
-	
-    # print('テストケース({}件):\n'.format(len(argSet)) + str(argSet))
-    
+	 
     for i in range(1, len(kihonDict)+1):
         print("基本課題{}: ".format(i) + str(kihonDict["kihon{}".format(i)]))
     for i in range(1, len(hattenDict)+1):
@@ -72,12 +79,18 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
     for i, execFile in enumerate(execFiles):
         outputResults = []
         print('\n[{}/{}]*****{}*****'.format(i+1, len(execFiles), execFile))
-        execKadaiNum = execFile[:5]+execFile[7]
+        if execFile[0] == "k":
+            execKadaiNum = execFile[:5]+execFile[7]
+            kadaiSyurui = "kihon"
+        else:
+            execKadaiNum = execFile[:6]+execFile[8]
+            kadaiSyurui = "hatten"
         #print("execFile:{}".format(execFile))
-        print("実行入力ケース\n" + str(inputCasesDict[execKadaiNum]))
-        #print("answers:{}".format(answerDict[execKadaiNum]))
+        print("実行入力ケース\n" + str(inputCasesDict[kadaiSyurui][execKadaiNum]))
+
+        #print("answers:{}".format(answerDict[kadaiSyurui][execKadaiNum]))
         
-        for inputCase in inputCasesDict[execKadaiNum]:
+        for inputCase in inputCasesDict[kadaiSyurui][execKadaiNum]:
             
             p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             strArgs = '\n'.join(inputCase)
@@ -88,9 +101,9 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
             checkPoint = parseJsonAndGetCheckPoint(jugyoNum=jugyoNum, kadaiNum=execKadaiNum)
         
         if checkPoint == "figure":
-            result, incorrectResult = checkKadai(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[execKadaiNum], kadaiNum=execKadaiNum)
+            result, incorrectResult = checkKadai(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum)
         elif checkPoint == "string":
-            result, incorrectResult = checkKadaiString(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[execKadaiNum], kadaiNum=execKadaiNum)
+            result, incorrectResult = checkKadaiString(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum)
 
         if result:
             correctList.append(execFile)
@@ -103,9 +116,14 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
     print("\n*****不正解*****\n" + str(incorrectList))
     print("\n*****不正解出力ケース*****\n" + str(incorrectResultList))
 
-def calcKihonAndHatten(kihonNum: int, hattenNum: int, execFiles: List[str]):
+def calcKihonAndHatten(jugyoNum: int,execFiles: List[str]):
     kihonDict={}
     hattenDict={}
+    jsonPath = "./json/{}kai.json".format(jugyoNum)
+    f = open(jsonPath, "r")
+    jsonDict = json.load(f)
+    kihonNum = len(jsonDict["kihon"])
+    hattenNum = len(jsonDict["hatten"])
     for i in range(1, kihonNum+1):
         kihonDict["kihon{}".format(i)]=[]
     for i in range(1, hattenNum+1):
@@ -134,7 +152,7 @@ if __name__ == "__main__":
     #print("execFiles:{}".format(execFiles))
     
     parseJsonAndGetInputCases(jugyoNum=1)
-    k,h=calcKihonAndHatten(kihonNum=2, hattenNum=0, execFiles=execFiles)
+    k,h=calcKihonAndHatten(jugyoNum=jugyoNum,execFiles=execFiles)
     executeExeFileAndCheckAnswer(jugyoNum=1,kihonDict=k, hattenDict=h, execFiles=execFiles)
 
     print('\n*****コンパイルエラー*****\n')

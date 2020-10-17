@@ -191,13 +191,23 @@ def parseJsonAndGetAnswers(jugyoNum: int) -> dict:
 
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
-    
-    for kadaiNum in jsonDict:
-        answersDict[kadaiNum] = []
-        inputCases = jsonDict[kadaiNum]["inputCases"]
+    answersDict["kihon"] = {}
+    answersDict["hatten"] = {}
+    # print("基本課題の数:{}".format(len(jsonDict["kihon"])))
+    # print("発展課題の数:{}".format(len(jsonDict["hatten"])))
+
+    for kadaiNum in jsonDict["kihon"]:
+        answersDict["kihon"][kadaiNum] = []
+        inputCases = jsonDict["kihon"][kadaiNum]["inputCases"]
         for inputCase in inputCases:
-            answersDict[kadaiNum].append(inputCases[inputCase]["answer"])
-    
+            answersDict["kihon"][kadaiNum].append(inputCases[inputCase]["answer"])
+
+    for kadaiNum in jsonDict["hatten"]:
+        answersDict["hatten"][kadaiNum] = []
+        inputCases = jsonDict["hatten"][kadaiNum]["inputCases"]
+        for inputCase in inputCases:
+            answersDict["hatten"][kadaiNum].append(inputCases[inputCase]["answer"])
+    #print("answersDict:{}".format(answersDict))
     return answersDict
 
 def parseJsonAndGetCheckPoint(kadaiNum: str, jugyoNum: int) -> str:
@@ -224,7 +234,8 @@ def parseJsonAndGetCheckPoint(kadaiNum: str, jugyoNum: int) -> str:
     jsonPath = "./json/{}kai.json".format(jugyoNum)
     f = open(jsonPath, "r")
     jsonDict = json.load(f)
-    kadaiDict = jsonDict[kadaiNum]
+    kadaiSyurui = kadaiNum[:-1]
+    kadaiDict = jsonDict[kadaiSyurui][kadaiNum]
 
     return kadaiDict["checkPoint"]
 
@@ -243,8 +254,8 @@ if __name__ == "__main__":
     #checkKadaiString(exeKadai(), "閏年です")
     
     
-    answerList = parseJsonAndGetAnswers(jsonPath="./json/1kai.json",kadaiNum = "kihon1")
-    os.chdir("scriptAndprogram/")
+    answerList = parseJsonAndGetAnswers(jugyoNum=1)
+    #os.chdir("scriptAndprogram/")
 
     outputResult = executeKadaiAndGetOutputResult(shFile = "kihon1-1-AL20024.sh")
     studentID = getStudentID(filename="kihon1-1-AL20024.sh")
