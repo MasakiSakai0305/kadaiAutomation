@@ -15,6 +15,28 @@ path = "./kadaiPrograms/{}kai".format(jugyoNum)
 def decodeByteToStr(byte_list: list) -> list:
 	return  [i.decode('utf8') for i in byte_list]
 
+def compileCommand(jugyoNum: int, kadaiNum: str) -> subprocess.Popen:
+    """
+    コンパイルコマンドが違う場合の場合分けを行う
+    """
+    p = subprocess.Popen(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(jugyoNum) + file.replace('.c', '')], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    pass
+
+def executeCommand(jugyoNum: int, kadaiNum: str, exePath: str, execFile: str) -> subprocess.Popen:
+    """
+    実行コマンドが違う場合の場合分けを行う
+    """
+    p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if jugyoNum == 4:
+        if kadaiNum == "kihon1" or kadaiNum == "kihon2":
+            p = subprocess.Popen([exePath + execFile], "<", "seiseki.txt", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        elif kadaiNum == "hatten1":
+            p = subprocess.Popen([exePath + execFile], "<", "joho.bmp", ">", "joho2.bmp", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        elif kadaiNum == "hatten2":
+            p = subprocess.Popen([exePath + execFile], "<", "c.txt", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print("p.type():{}".format(type(p)))
+    return p
+
 def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
     print('\n*****コンパイル状況*****\n')
     compileError = []
@@ -92,7 +114,8 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
         
         for inputCase in inputCasesDict[kadaiSyurui][execKadaiNum]:
             
-            p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = executeCommand(jugyoNum=jugyoNum, kadaiNum=execKadaiNum, exePath=exePath, execFile=execFile)
+            #p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             strArgs = '\n'.join(inputCase)
             o, e = p.communicate(input=strArgs.encode())
             print(o.decode())
@@ -140,7 +163,8 @@ def calcKihonAndHatten(jugyoNum: int,execFiles: List[str]):
 
 
 if __name__ == "__main__":
-    jugyoNum = 3
+    print("授業回を入力")
+    jugyoNum = int(input())
     path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
     lsitdir = os.listdir(path=path)
     files = [f for f in lsitdir if os.path.isfile(os.path.join(path, f))]

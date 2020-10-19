@@ -69,20 +69,48 @@
             "numberOfInputCases":4, 
             "inputCases":{
                 "inputCase1":{
-                    "input":["2001"],
-                    "answer":["では"]
+                    "input":["234"],
+                    "answer":["1の位は4","10の位は3","100の位は2","3 keta"]
                 },
                 "inputCase2":{
-                    "input":["2000"],
-                    "answer":["です"]
+                    "input":["1"],
+                    "answer":["1の位は1","1 keta"]
                 },
                 "inputCase3":{
-                    "input":["1900"],
-                    "answer":["では"]
+                    "input":["10"],
+                    "answer":["1の位は0","10の位は1","2 keta"]
+                }
+            }
+        },
+        "hatten3":{
+            "checkPoint": "string",
+            "numberOfInputCases":3, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["3","61"],
+                    "answer":["0.04918032786885245901639344262295081967213114754098"]
                 },
-                "inputCase4":{
-                    "input":["2004"],
-                    "answer":["です"]
+                "inputCase2":{
+                    "input":["500","16"],
+                    "answer":["31.25"]
+                },
+                "inputCase3":{
+                    "input":["2","5"],
+                    "answer":["0.4"]
+                }
+            }
+        },
+        "hatten4":{
+            "checkPoint": "figure",
+            "numberOfInputCases":2, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["1","1","1","-1"],
+                    "answer":["3"]
+                },
+                "inputCase2":{
+                    "input":["1","0","-1"],
+                    "answer":["1"]
                 }
             }
         }
