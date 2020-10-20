@@ -29,12 +29,10 @@ def executeCommand(jugyoNum: int, kadaiNum: str, exePath: str, execFile: str) ->
     p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if jugyoNum == 4:
         if kadaiNum == "kihon1" or kadaiNum == "kihon2":
-            p = subprocess.Popen([exePath + execFile], "<", "seiseki.txt", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        elif kadaiNum == "hatten1":
-            p = subprocess.Popen([exePath + execFile], "<", "joho.bmp", ">", "joho2.bmp", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen("{}{} < ./kadaiPrograms/4kai/codes/option/seiseki.txt".format(exePath, execFile),shell=True,  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #p = subprocess.Popen(['{}{}'.format(exePath, execFile), ' < ', ' ./kadaiPrograms/4kai/codes/option/seiseki.txt'],  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif kadaiNum == "hatten2":
-            p = subprocess.Popen([exePath + execFile], "<", "c.txt", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print("p.type():{}".format(type(p)))
+            p = subprocess.Popen("{}{} < ./kadaiPrograms/4kai/codes/option/c.txt".format(exePath, execFile), shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return p
 
 def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
@@ -46,6 +44,7 @@ def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
     for i, file in enumerate(specificFiles):
         # print("file:{}".format(file))
         p = subprocess.Popen(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(jugyoNum) + file.replace('.c', '')], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(['gcc', './kadaiPrograms/{}kai/codes/'.format(jugyoNum) + file , '-o', './kadaiPrograms/{}kai/exec/'.format(jugyoNum) + file.replace('.c', '')])
         stdout = p.stdout.readlines()
         stderr = p.stderr.readlines()
         print('対象ファイル: {0} ({1}/{2})'.format(file, i+1, len(specificFiles)))
@@ -149,7 +148,7 @@ def calcKihonAndHatten(jugyoNum: int,execFiles: List[str]):
     hattenNum = len(jsonDict["hatten"])
     for i in range(1, kihonNum+1):
         kihonDict["kihon{}".format(i)]=[]
-    for i in range(1, hattenNum+1):
+    for i in range(1, hattenNum+2):
         hattenDict["hatten{}".format(i)]=[]
 
     for execFile in execFiles:
@@ -163,8 +162,7 @@ def calcKihonAndHatten(jugyoNum: int,execFiles: List[str]):
 
 
 if __name__ == "__main__":
-    print("授業回を入力")
-    jugyoNum = int(input())
+    jugyoNum = int(input("授業回を入力:"))
     path = "./kadaiPrograms/{}kai/codes/".format(jugyoNum)
     lsitdir = os.listdir(path=path)
     files = [f for f in lsitdir if os.path.isfile(os.path.join(path, f))]

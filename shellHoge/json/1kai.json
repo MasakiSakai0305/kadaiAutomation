@@ -39,6 +39,16 @@
                     "answer":["正の整数では"]
                 }
             }
+        },
+        "kihon3":{
+            "checkPoint": "string",
+            "numberOfInputCases":1, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":[""],
+                    "answer":["hoge"]
+                }
+            }
         }
     },
     "hatten":{

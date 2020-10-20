@@ -1,0 +1,82 @@
+{
+    "kihon":{
+        "kihon1":{
+            "checkPoint": "string",
+            "numberOfInputCases":1, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":[""],
+                    "answer":["80点以上の人は81"]
+                }
+            }
+        },
+        "kihon2":{
+            "checkPoint": "string",
+            "numberOfInputCases":1, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":[""],
+                    "answer":["82.70"]
+                }
+            }
+        }
+    },
+    "hatten":{
+        "hatten2":{
+            "checkPoint": "figure",
+            "numberOfInputCases":1, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":[""],
+                    "answer":["2308"]
+                }
+            }
+        },
+        "hatten3":{
+            "checkPoint": "figure",
+            "numberOfInputCases":2, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["1","2","3","4","1","1","1","1"],
+                    "answer":["3","3","7","7"]
+                },
+                "inputCase2":{
+                    "input":["4","3","2","1","1","1","1","1"],
+                    "answer":["7","7","3","3"]
+                }
+            }
+        },
+        "hatten4":{
+            "checkPoint": "figure",
+            "numberOfInputCases":2, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["1","2","3","4","3"],
+                    "answer":["37","54","81","118"]
+                },
+                "inputCase2":{
+                    "input":["1","2","3","4","2"],
+                    "answer":["7","10","15","22"]
+                }
+            }
+        },
+        "hatten5":{
+            "checkPoint": "string",
+            "numberOfInputCases":3, 
+            "inputCases":{
+                "inputCase1":{
+                    "input":["10"],
+                    "answer":["1010"]
+                },
+                "inputCase2":{
+                    "input":["2"],
+                    "answer":["10"]
+                },
+                "inputCase3":{
+                    "input":["10000"],
+                    "answer":["10011100010000"]
+                }
+            }
+        }
+    }
+}
