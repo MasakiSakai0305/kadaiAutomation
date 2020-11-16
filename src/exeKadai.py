@@ -56,6 +56,10 @@ def executeCommand(jugyoNum: int, kadaiNum: str, exePath: str, execFile: str) ->
             #p = subprocess.Popen(['{}{}'.format(exePath, execFile), ' < ', ' ./kadaiPrograms/4kai/codes/option/seiseki.txt'],  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif kadaiNum == "hatten2":
             p = subprocess.Popen("{}{} < ./kadaiPrograms/4kai/codes/option/c.txt".format(exePath, execFile), shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    elif jugyoNum == 6:
+        if kadaiNum == "kihon1" or kadaiNum == "kihon2":
+            p = subprocess.Popen("{}{} < ./kadaiPrograms/6kai/codes/option/seiseki.txt".format(exePath, execFile), shell=True,  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return p
 
 def compileAssignments(specificFiles: List[str], jugyoNum: int) -> List[str]:
@@ -186,26 +190,26 @@ def executeExeFileAndCheckAnswer(jugyoNum: int, kihonDict: dict, hattenDict: dic
             execKadaiNum = execFile[:6]+execFile[8]
             kadaiSyurui = "hatten"
         #print("execFile:{}".format(execFile))
-        print("実行入力ケース\n" + str(inputCasesDict[kadaiSyurui][execKadaiNum]))
+        print("実行入力ケース数:{}\n".format(len(inputCasesDict[kadaiSyurui][execKadaiNum])) + str(inputCasesDict[kadaiSyurui][execKadaiNum]))
 
         #print("answers:{}".format(answerDict[kadaiSyurui][execKadaiNum]))
-        
-        for inputCase in inputCasesDict[kadaiSyurui][execKadaiNum]:
+        inputCases = inputCasesDict[kadaiSyurui][execKadaiNum]
+        for inputCase in inputCases:
             
             p = executeCommand(jugyoNum=jugyoNum, kadaiNum=execKadaiNum, exePath=exePath, execFile=execFile)
             #p = subprocess.Popen([exePath + execFile], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             strArgs = '\n'.join(inputCase)
+            # print("strArgs:{}".format(strArgs))
             o, e = p.communicate(input=strArgs.encode())
-            print(o.decode())
             # print(type(o.decode()),o.decode()[:5])
             outputResults.append(o.decode())
             # print("outputResults:{}".format(outputResults))
             checkPoint = parseJsonAndGetCheckPoint(jugyoNum=jugyoNum, kadaiNum=execKadaiNum)
         
         if checkPoint == "figure":
-            result, incorrectResult = checkKadai(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum)
+            result, incorrectResult = checkKadai(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum, inputCases=inputCases)
         elif checkPoint == "string":
-            result, incorrectResult = checkKadaiString(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum)
+            result, incorrectResult = checkKadaiString(outputResults=outputResults, studentID=execFile[-7:], answer=answerDict[kadaiSyurui][execKadaiNum], kadaiNum=execKadaiNum, inputCases=inputCases)
 
         if result:
             correctList.append(execFile)

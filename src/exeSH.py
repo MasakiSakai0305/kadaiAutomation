@@ -67,7 +67,7 @@ def getStudentID(filename: str) -> str:
 
 
 #出力結果の数字を確認して採点する
-def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str) -> bool:
+def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str, inputCases: str) -> bool:
     """
     出力結果から課題の正解・不正解を判定
     出力結果の数値を見て判定する
@@ -91,36 +91,57 @@ def checkKadai(outputResults: List[str], studentID: str,  answer: List[List[str]
         bool
         正解:True, 不正解:False
     """
+    inputCases = inputCases.split("\n")
     ok = True
     responseList = []
     answerList = []
     checkPointList = []
-    i=0
-    for outputResult in outputResults:
+    incorrectResponseList = []
+    incorrectInputCases = []
+    
+    for i, outputResult in enumerate(outputResults):
         checkPoint = re.findall(r'\d+', outputResult)
+        responseList.append(outputResult)
 
         #answerと実行出力結果をチェック
         if checkPoint != answer[i]:
             ok = False
-            responseList.append(outputResult)
+            incorrectResponseList.append(outputResult)
+            incorrectInputCases.append(inputCases[i])
             answerList.append(answer[i])
             checkPointList.append(checkPoint)
-        i+=1
+            break
+        
+         #answerと実行出力結果をチェック
+        for j in range(len(answer[i])):
+            responseList.append(outputResult)
+            if answer[i][j] not in outputResult:
+                # print("不正解になったよ\n", inputCases[i], outputResult, "\n")
+                ok = False
+                incorrectResponseList.append(outputResult)
+                answerList.append(answer[i])
+                incorrectInputCases.append(inputCases[i])
+                break
     
     if ok:
-        #print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        for i in range(len(inputCases)):
+            print("**入力ケース[{}/{}]**".format(i+1, len(inputCases)))
+            print("入力:{}".format(inputCases[i]))
+            print("実行結果\n{}\n".format(responseList[i]))
         return True, None
     else:
-        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
-        for i in range(len(responseList)):
-            print("実行結果:{}".format(responseList[i]))
-            print("チェックポイント:{}".format(checkPointList[i]))
-            print("正解の実行結果：{}\n".format(answerList[i]))
+        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(incorrectResponseList)))
+        for i in range(len(incorrectResponseList)):
+            print("**入力ケース[{}/{}]**".format(i+1, len(incorrectResponseList)))
+            print("入力:{}".format(incorrectInputCases[i]))
+            print("実行結果\n{}".format(incorrectResponseList[i]))
+            print("正解の実行結果\n{}\n".format(answerList[i]))
         return False, [responseList, answerList]
 
 
 #数字ではなく，出力結果の文字列を確認して採点する
-def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str) -> bool:
+def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[List[str]], kadaiNum: str, inputCases: List[str]) -> bool:
     """
     出力結果から課題の正解・不正解を判定
     出力結果の文字列を見て判定する
@@ -147,30 +168,41 @@ def checkKadaiString(outputResults: List[str], studentID: str,  answer: List[Lis
     
     ok = True
     responseList = []
+    incorrectResponseList = []
     answerList = []
-    i=0
-    #print("outputResults:{}".format(outputResults))
+    incorrectInputCases = []
+    # print("outputResults:{}".format(outputResults))
     
-    for outputResult in outputResults:
+    for i, outputResult in enumerate(outputResults):
         #print("answer[i][0]:{}".format(answer[i]))
             
         #answerと実行出力結果をチェック
         for j in range(len(answer[i])):
+            responseList.append(outputResult)
             if answer[i][j] not in outputResult:
+                # print("不正解になったよ\n", inputCases[i], outputResult, "\n")
                 ok = False
-                responseList.append(outputResult)
+                incorrectResponseList.append(outputResult)
                 answerList.append(answer[i])
-            
-        i+=1
+                incorrectInputCases.append(inputCases[i])
+                break
+                
+    # print("aa", inputCases)
     if ok:
-        #print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        print("学籍番号{}, {}:正解".format(studentID, kadaiNum))
+        for i in range(len(inputCases)):
+            print("**入力ケース[{}/{}]**".format(i+1, len(inputCases)))
+            print("入力:{}".format(inputCases[i]))
+            print("実行結果\n{}\n".format(responseList[i]))
         return True, None
     else:
-        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(responseList)))
-        for i in range(len(responseList)):
-            print("実行結果:{}".format(responseList[i]))
-            print("正解の実行結果：{}\n".format(answerList[i]))
-        return False, [responseList, answerList]
+        print("学籍番号{}, {}:不正解\n不正解入力ケース数:{}\n".format(studentID, kadaiNum, len(incorrectResponseList)))
+        for i in range(len(incorrectResponseList)):
+            print("**入力ケース[{}/{}]**".format(i+1, len(incorrectResponseList)))
+            print("入力:{}".format(incorrectInputCases[i]))
+            print("実行結果\n{}".format(incorrectResponseList[i]))
+            print("正解の実行結果\n{}\n".format(answerList[i]))
+        return False, [incorrectResponseList, answerList]
 
 def parseJsonAndGetAnswers(jugyoNum: int) -> dict:
     """
