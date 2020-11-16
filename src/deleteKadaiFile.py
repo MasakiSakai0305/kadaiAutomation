@@ -15,3 +15,10 @@ if __name__ == "__main__":
     path = "./kadaiPrograms/{}kai/".format(jugyoNum)
     remove_glob(pathname=path + "codes/ok/*.c")
     remove_glob(pathname=path + "exec/ok/*")
+
+    if input("okフォルダに入っていないファイルも削除しますか[y/n]") == "y":
+        remove_glob(pathname=path + "codes/*.c")
+        remove_glob(pathname=path + "exec/*")
+    
+    else:
+        print("終了")
